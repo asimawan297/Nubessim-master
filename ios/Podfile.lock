@@ -1,0 +1,28 @@
+PODS:
+  - esim_compatibility (0.0.1):
+    - Flutter
+  - esim_installer_flutter (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - esim_compatibility (from `.symlinks/plugins/esim_compatibility/ios`)
+  - esim_installer_flutter (from `.symlinks/plugins/esim_installer_flutter/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  esim_compatibility:
+    :path: ".symlinks/plugins/esim_compatibility/ios"
+  esim_installer_flutter:
+    :path: ".symlinks/plugins/esim_installer_flutter/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  esim_compatibility: 1a41aecca27922f4e67edd1c754c30d2d01f4c2d
+  esim_installer_flutter: 67ba875f8164705f8b85a9d4bb7acc9e1d2fa464
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+
+PODFILE CHECKSUM: 6e73eb6faf59e46d3a55a1ec3d4108708e1ad90a
+
+COCOAPODS: 1.16.2

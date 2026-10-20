@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "472345055409",
+    "project_id": "nubesim-7267b",
+    "storage_bucket": "nubesim-7267b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472345055409:android:ffb4513d67fa769d091290",
+        "android_client_info": {
+          "package_name": "com.arham.nubes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472345055409-30l2mah194rc1a8ss0eous1udm17v9ra.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.arham.nubes",
+            "certificate_hash": "0bceb8fdba9be1484a31ea118265aab0e77504c4"
+          }
+        },
+        {
+          "client_id": "472345055409-blsqj6ujdmr3kg0dnkif82lod5oj7qma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9cFXdNMTFZCp0i91DFKdmRkeshsEO99k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472345055409-3uatngt0mga87gm9bp3aqu6k8tmm0t97.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

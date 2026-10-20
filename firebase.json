@@ -1,0 +1,43 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "nubesim-7267b",
+          "appId": "1:472345055409:android:ffb4513d67fa769d091290",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nubesim-7267b",
+          "configurations": {
+            "android": "1:472345055409:android:ffb4513d67fa769d091290",
+            "ios": "1:472345055409:ios:64afb4de86dd2e1a091290"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "functions": {
+      "host": "0.0.0.0",
+      "port": 5001
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+      ]
+    }
+  ]
+}

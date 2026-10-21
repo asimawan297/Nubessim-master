@@ -51,3 +51,6 @@ lib old/dev/stripe_test_payment_screen.dart
 *.jks
 *.keystore
 secret_jks_key/
+
+# Brevo key stays on this machine
+brevo.local.json

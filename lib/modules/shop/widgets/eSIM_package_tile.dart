@@ -651,6 +651,7 @@ class _EsimPackageTileState extends State<EsimPackageTile> {
         ),
       );
 
+      hideCheckoutKeyboard();
       var paid = false;
       try {
         await Stripe.instance.presentPaymentSheet();
@@ -659,6 +660,7 @@ class _EsimPackageTileState extends State<EsimPackageTile> {
         paid = await paymentAlreadyTaken(clientSecret);
       }
       if (!paid || !mounted) return;
+      hideCheckoutKeyboard();
 
       await OrderService(context).placeOrder(
         package: widget.package!,

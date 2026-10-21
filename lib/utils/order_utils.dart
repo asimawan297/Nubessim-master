@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,7 @@ import 'package:nubesim/utils/display/display_utils.dart';
 import 'package:nubesim/utils/html_templates.dart';
 import 'package:uuid/uuid.dart';
 import 'package:nubesim/common/email_cubit/email_cubit.dart';
+import 'package:nubesim/common/email_repository/email_repository.dart';
 import 'package:nubesim/common/model/send_email_input.dart';
 import 'package:nubesim/constants/keys.dart';
 import 'package:nubesim/core/model/order_history_model.dart';
@@ -34,6 +36,15 @@ Future<EsimList?> _queryEsimUntilReady(String orderNo) async {
     if (!DateTime.now().isBefore(deadline)) return latest;
     await Future.delayed(const Duration(seconds: 2));
   }
+}
+
+void hideCheckoutKeyboard() {
+  FocusManager.instance.primaryFocus?.unfocus();
+}
+
+String _storedOrFirebase(String stored, String? firebaseValue) {
+  if (stored.trim().isNotEmpty) return stored.trim();
+  return firebaseValue?.trim() ?? '';
 }
 
 /// Stripe PaymentSheet client secrets look like `pi_xxx_secret_yyy`.
@@ -89,10 +100,21 @@ class OrderService {
           orderProfile.orderNo.isNotEmpty ? orderProfile.orderNo : canonicalTrx;
       final coverageList =
           package.locationNetworkList.map<dynamic>((e) => e.toJson()).toList();
-      final storedEmail =
-          (stripeCustomerEmail != null && stripeCustomerEmail.trim().isNotEmpty)
-              ? stripeCustomerEmail.trim()
-              : storageService.getString(StorageKeys.userEmail);
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      final accountUid = _storedOrFirebase(
+        storageService.getString(StorageKeys.userUid),
+        firebaseUser?.uid,
+      );
+      final accountEmail = _storedOrFirebase(
+        (stripeCustomerEmail != null && stripeCustomerEmail.trim().isNotEmpty)
+            ? stripeCustomerEmail.trim()
+            : storageService.getString(StorageKeys.userEmail),
+        firebaseUser?.email,
+      );
+      final accountName = _storedOrFirebase(
+        storageService.getString(StorageKeys.userName),
+        firebaseUser?.displayName,
+      );
 
       OrderHistoryModel model = OrderHistoryModel(
         name: package.name,
@@ -101,7 +123,7 @@ class OrderService {
             "https://static.redteago.com${package.locationNetworkList.first.locationLogo}",
         orderNumber: resolvedOrderNo,
         trxId: canonicalTrx,
-        uid: storageService.getString(StorageKeys.userUid),
+        uid: accountUid,
         coverage: coverageList,
         createdAt: DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .format(DateTime.now().toUtc()),
@@ -109,7 +131,7 @@ class OrderService {
             ? amountInDollar
             : num.tryParse(amountInDollar.toString()),
         stripeCurrency: 'usd',
-        stripeCustomerEmail: storedEmail.isEmpty ? null : storedEmail,
+        stripeCustomerEmail: accountEmail.isEmpty ? null : accountEmail,
         whatsappNumber: whatsappNumber?.trim().isEmpty ?? true
             ? null
             : whatsappNumber!.trim(),
@@ -155,6 +177,7 @@ class OrderService {
 
       // Navigate to Complete Order Screen
       if (!context.mounted) return;
+      hideCheckoutKeyboard();
       NavRouter.pushFromRoot(
         context,
         CompleteOrderScreen(
@@ -170,8 +193,8 @@ class OrderService {
 
       // Send Confirmation Email (same QR row as Stripe test: esim/query → qrCodeUrl)
       final emailCubit = context.read<EmailCubit>();
-      final userName = storageService.getString(StorageKeys.userName);
-      final userEmail = storageService.getString(StorageKeys.userEmail);
+      final userName = accountName;
+      final userEmail = accountEmail;
 
       final htmlContent = await loadOrderConfirmationEmailTemplate(
         name: userName.isEmpty ? "Traveler" : userName,
@@ -206,7 +229,9 @@ class OrderService {
       //   subject: "Esim Ready from Nubes",
       //   htmlContent: htmlContentReadyEmail,
       // );
-      await emailCubit.sendEmail(emailInput);
+      if (userEmail.isNotEmpty && brevoApiKey.isNotEmpty) {
+        await emailCubit.sendEmail(emailInput);
+      }
       // await emailCubit.sendEmail(emailInputInstance);
     } else {
       DisplayUtils.showToast(

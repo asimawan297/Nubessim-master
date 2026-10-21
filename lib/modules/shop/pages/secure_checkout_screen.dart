@@ -273,6 +273,7 @@ class _SecureCheckoutScreenState extends State<SecureCheckoutScreen> {
                             ),
                           ),
                         );
+                        hideCheckoutKeyboard();
                         var paid = false;
                         try {
                           await Stripe.instance.presentPaymentSheet();
@@ -281,6 +282,7 @@ class _SecureCheckoutScreenState extends State<SecureCheckoutScreen> {
                           paid = await paymentAlreadyTaken(clientSecret);
                         }
                         if (!paid || !mounted) return;
+                        hideCheckoutKeyboard();
                         await FirebaseAnalytics.instance.logEvent(
                           name: 'add_payment_info',
                           parameters: {
@@ -288,7 +290,6 @@ class _SecureCheckoutScreenState extends State<SecureCheckoutScreen> {
                             'value': quote.localizedAmount(amountInDollar),
                           },
                         );
-                        FocusScope.of(context).unfocus();
                         // 3. Place order (only after payment success)
 
                         if (widget.routeType == "TOP_UP") {

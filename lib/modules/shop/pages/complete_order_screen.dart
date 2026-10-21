@@ -47,6 +47,10 @@ class _CompleteOrderScreenState extends State<CompleteOrderScreen> {
     _qrCodeUrl = widget.qrCodeUrl;
     _activationCode = widget.activationCode;
     _pollDeadline = DateTime.now().add(const Duration(seconds: 30));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      FocusManager.instance.primaryFocus?.unfocus();
+    });
     if (!_hasQr || !_hasActivationCode) {
       _preparing = widget.orderNumber.trim().isNotEmpty;
       if (_preparing) {

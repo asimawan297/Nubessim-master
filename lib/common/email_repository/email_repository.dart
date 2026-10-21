@@ -7,6 +7,9 @@ import '../model/send_email_input.dart';
 import '../model/send_email_response.dart';
 import '../../../constants/api_endpoints.dart';
 
+/// Supplied at build time from the gitignored brevo.local.json file.
+const String brevoApiKey = String.fromEnvironment('BREVO_API_KEY');
+
 class EmailRepository {
   final DioClient _dioClient;
   final _log = logger(EmailRepository);
@@ -16,6 +19,9 @@ class EmailRepository {
   Future<SendEmailResponse> sendEmail({
     required SendEmailInput input,
   }) async {
+    if (brevoApiKey.isEmpty || input.receiverEmail.trim().isEmpty) {
+      return SendEmailResponse(messageId: '');
+    }
     try {
       final response = await _dioClient.post(
         Endpoints.sendEmail,
@@ -24,7 +30,7 @@ class EmailRepository {
           headers: {
             "accept": "application/json",
             "content-type": "application/json",
-            "api-key": "",
+            "api-key": brevoApiKey,
           },
         ),
       );
